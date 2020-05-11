@@ -94,12 +94,14 @@ export class Queue {
 
     this.realm.write(() => {
 
+      const isRetryDelayDefined = Array.isArray(options.retryDelay) && options.retryDelay.length > 0;
+
       this.realm.create('Job', {
         id: uuid.v4(),
         name,
         payload: JSON.stringify(payload),
         data: JSON.stringify({
-          attempts: options.attempts || 1
+          attempts: isRetryDelayDefined ? options.retryDelay.length + 1 : options.attempts || 1
         }),
         priority: Number.isInteger(options.priority) ? options.priority : 0,
         active: false,
@@ -107,7 +109,7 @@ export class Queue {
         created: new Date(),
         failed: null,
         nextValidTime: new Date(),
-        retryDelay: Number.isInteger(options.retryDelay) ? options.retryDelay : 0,
+        retryDelay: isRetryDelayDefined ? options.retryDelay : [0]
       });
 
     });
@@ -389,17 +391,21 @@ export class Queue {
         job.active = false;
 
         // Mark job as failed if too many attempts
-        if (jobData.failedAttempts >= jobData.attempts) {
+        if (jobData.failedAttempts >= jobData.attempts ) {
           job.failed = new Date();
+        } else { 
+          const retryDelay = job.retryDelay[jobData.failedAttempts - 1];
+          job.nextValidTime = new Date(new Date().getTime() + retryDelay);
         }
-
-        job.nextValidTime = new Date(new Date().getTime() + job.retryDelay);
       });
 
-      if(job.retryDelay && job.retryDelay > 0) setTimeout(() => {
-        this.start(this.lifespan ? this.lifespan : 0);
-      },job.retryDelay);
-
+      if (jobData.failedAttempts <= job.retryDelay.length) {
+        const retryDelay = job.retryDelay[jobData.failedAttempts - 1]; 
+        if(retryDelay && retryDelay > 0) setTimeout(() => {
+          this.start(this.lifespan ? this.lifespan : 0);
+        },retryDelay);
+      }
+        
       // Execute job onFailure lifecycle callback.
       this.worker.executeJobLifecycleCallback('onFailure', jobName, jobId, jobPayload);
 

@@ -19,7 +19,7 @@ const JobSchema = {
     created: 'date', // Job creation timestamp.
     failed: 'date?', // Job failure timestamp (null until failure).
     nextValidTime: 'date?', // Next timestamp it would be valid to execute the job calculated from retry Delay at time of fail
-    retryDelay: 'int',
+    retryDelay: 'int[]',
   }
 };
 

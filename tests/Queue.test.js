@@ -533,12 +533,12 @@ describe('Models/Queue', function() {
 
       queue.createJob(failingJobName, {
         trackingName: 'job16-failing-job-name-retryDelay(2800)-attempts(3)', // This job should run twice in lifespan
-        retryDelay: 3000,
+        retryDelay: [3000, 3000, 3000],
         attempts: 3,
         payloadTimeout: 10,
       }, {
         timeout: 600,
-        retryDelay: 3000,
+        retryDelay: [3000, 3000, 3000],
         attempts: 3,
         priority: 100,
       }, false);
@@ -1293,7 +1293,7 @@ describe('Models/Queue', function() {
       queue.createJob(jobName, {}, {
         attempts: 2,
         timeout: 250,
-        retryDelay: 2000,
+        retryDelay: [2000, 2000],
       }, false);
 
       const now = Date.now();
@@ -1339,7 +1339,7 @@ describe('Models/Queue', function() {
       queue.createJob(jobName, {}, {
         attempts: 2,
         timeout: 99,
-        retryDelay: 100,
+        retryDelay: [100, 100],
       }, false);
 
       if(nextValidTime)
@@ -2333,7 +2333,7 @@ describe('Models/Queue', function() {
     }, false);
 
     queue.createJob(jobName,{foo:'bar'},{
-      retryDelay: 500,
+      retryDelay: [500, 500, 500],
       attempts: 3,
       timeout: 200,
     },false);
@@ -2369,7 +2369,7 @@ describe('Models/Queue', function() {
     }, false);
 
     queue.createJob(jobName,{foo:'bar'},{
-      retryDelay: 500,
+      retryDelay: [500, 500, 500],
       attempts: 3,
       timeout: 200,
     },false);
@@ -2379,7 +2379,7 @@ describe('Models/Queue', function() {
     expect(callCount).toBe(1);
 
     queue.createJob(jobName,{foo:'bar'},{
-      retryDelay: 500,
+      retryDelay: [500, 500, 500],
       attempts: 3,
       timeout: 200,
     });
@@ -2401,7 +2401,7 @@ describe('Models/Queue', function() {
     }, false);
 
     queue.createJob(jobName,{foo:'bar'},{
-      retryDelay: 500,
+      retryDelay: [500, 500, 500],
       attempts: 3,
       timeout: 200,
     },false);
@@ -2411,7 +2411,7 @@ describe('Models/Queue', function() {
     expect(callCount).toBe(1);
 
     queue.createJob(jobName,{foo:'bar'},{
-      retryDelay: 500,
+      retryDelay: [500, 500, 500],
       attempts: 3,
       timeout: 200,
     });
@@ -2432,25 +2432,25 @@ describe('Models/Queue', function() {
     }, false);
 
     queue.createJob(jobName,{foo:'bar'},{
-      retryDelay: 500,
+      retryDelay: [500, 500, 500],
       attempts: 3,
       timeout: 200,
     },false);
 
     queue.createJob(jobName,{foo:'goo'},{
-      retryDelay: 500,
+      retryDelay: [500, 500, 500],
       attempts: 3,
       timeout: 200,
     }, false);
 
     queue.createJob(jobName,{foo:'bar'},{
-      retryDelay: 500,
+      retryDelay: [500, 500, 500],
       attempts: 3,
       timeout: 200,
     },false);
 
     queue.createJob(jobName,{foo:'goo'},{
-      retryDelay: 500,
+      retryDelay: [500, 500, 500],
       attempts: 3,
       timeout: 200,
     }, false);
@@ -2490,7 +2490,7 @@ describe('Models/Queue', function() {
     }, false);
 
     queue.createJob(jobName,{foo:'bar'},{
-      retryDelay: 500,
+      retryDelay: [500, 500, 500],
       attempts: 3,
       timeout: 200,
     },false);
